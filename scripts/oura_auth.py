@@ -12,15 +12,15 @@
   uv run scripts/oura_auth.py refresh
   uv run scripts/oura_auth.py ensure
 
-  init:     初回セットアップ。環境ファイルを新規作成する。
+  init:     初回セットアップ。.env に OURA_* の行を書く。
   exchange: 認可コード(code)をアクセストークン・リフレッシュトークンに交換して保存する(初回のみ)。
   refresh:  refresh_tokenでaccess_tokenを更新して保存する(refresh_tokenは使い捨てのため
             新しい値で必ず上書きされる)。
   ensure:   expires_atを見て、期限切れ/5分以内に迫っていれば自動でrefreshし、
             有効期限を表示する。**トークンそのものは表示しない。**
 
-環境ファイルは $HOME/.claude-skills-env/oura-api-generic-logic.env。
-別のファイルを使うときは環境変数 OURA_ENV_FILE に絶対パスを渡す。
+認証情報は起動フォルダ(作業ディレクトリ)の .env の OURA_* に置く。同じキーの環境変数があれば
+そちらを優先する。書き込むときは .env の OURA_* の行だけを書き換える。
 """
 import json
 import os
@@ -34,7 +34,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from oura_env import DEFAULT_REDIRECT_URI, env_path, load, save  # noqa: E402
+from oura_env import DEFAULT_REDIRECT_URI, env_path, load, save, save_tokens  # noqa: E402
 
 TOKEN_URL = "https://api.ouraring.com/oauth/token"
 JST = timezone(timedelta(hours=9))
@@ -94,7 +94,7 @@ def cmd_exchange(path, code):
         "client_secret": creds["client_secret"],
     })
     _apply_token_response(creds, token_resp)
-    save(creds, path)
+    save_tokens(creds, path)
     print("access_token acquired. expires_at =", creds["expires_at"])
 
 
@@ -111,7 +111,7 @@ def refresh(path=None):
         "client_secret": creds["client_secret"],
     })
     _apply_token_response(creds, token_resp)
-    save(creds, path)
+    save_tokens(creds, path)
     return creds
 
 

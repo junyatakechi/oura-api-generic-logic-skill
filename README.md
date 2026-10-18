@@ -29,11 +29,11 @@ git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/s
 ## セットアップ
 
 1. [OuraのOAuthアプリの画面](https://cloud.ouraring.com/oauth/applications)でアプリを作り、client_id と client_secret を控える。リダイレクトURIは `http://localhost:8765/callback` にする。別の用途で作ったアプリがあれば、それを使ってよい。
-2. 環境ファイルを作る。`~/.claude-skills-env/oura-api-generic-logic.env` ができる。キーの名前は同梱の `.env.example` と同じ。
+2. 認証情報を書く。プロジェクトのフォルダ直下（Claude Code を起動するフォルダ）の `.env` に `OURA_*` の行が書かれる（`.env` が無ければ作られ、他のキーの行はそのまま残る）。キーの名前は同梱の `.env.example` と同じ。以下のコマンドは、どれもプロジェクトのフォルダで実行する。
 
    ```bash
-   cd ~/.claude/skills/oura-api-generic-logic
-   uv run scripts/oura_auth.py init <client_id> <client_secret>
+   cd <プロジェクトのフォルダ>
+   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py init <client_id> <client_secret>
    ```
 
 3. ブラウザで次のURLを開いて認可する。`<client_id>` は控えた値に置き換える。**スコープに `stress` と `heart_health` を含める。** 含めないと、回復力・心血管年齢・VO2Maxだけが取れない。
@@ -45,16 +45,16 @@ git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/s
 4. 許可すると `http://localhost:8765/callback?code=...` へ移り、接続エラーになる。手元で何も待ち受けていないためで、問題ない。アドレスバーの `code=` の値を控え、トークンに換える。
 
    ```bash
-   uv run scripts/oura_auth.py exchange <code>
+   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py exchange <code>
    ```
 
 5. 確かめる。
 
    ```bash
-   uv run scripts/oura_auth.py ensure
+   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py ensure
    ```
 
-refresh_token は使い捨てで、使うたびに道具が新しい値で環境ファイルを上書きする。手で古い値に戻さない。同じ環境ファイルを、同時に動く2つの処理で使わない。
+refresh_token は使い捨てで、使うたびに道具が `.env` の `OURA_*` の行を新しい値で上書きする。手で古い値に戻さない。同じ `.env` を、同時に動く2つの処理で使わない。トークンの3つ（`OURA_ACCESS_TOKEN`・`OURA_REFRESH_TOKEN`・`OURA_EXPIRES_AT`）は環境変数で渡さず `.env` に置く。環境変数が優先されるので、更新した値が使われなくなる。
 
 ## 使い方
 

@@ -15,7 +15,7 @@ metadata:
 | | このスキル |
 |---|---|
 | 依存してよい環境 | 誰もが共有する環境だけ（Oura API v2 `api.ouraring.com`） |
-| 持たないもの | 判断の対象（Ouraのレコード）と、導入先の環境。認証情報はスキルの外の環境ファイルに置き、どこに記録するか・列名は呼び出し側が持つ |
+| 持たないもの | 判断の対象（Ouraのレコード）と、導入先の環境。認証情報はプロジェクトのフォルダ直下の `.env` に置き、どこに記録するか・列名は呼び出し側が持つ |
 | 持つ道具 | 手続きに使う道具だけ（APIとの通信と、値の変換）。判断に使う道具は持たない |
 | 共有するとき | 混ぜて1つに育てる。新しく踏んだ落とし穴（エンドポイントの癖・項目の意味）は、判断として足していく |
 
@@ -42,7 +42,7 @@ metadata:
 
 ## 道具
 
-道具は `scripts/` にある。どれも手続きに使う道具で、呼び出し側が手続きの中で使う。`oura_auth.py`・`oura_api.py`・`oura_env.py` はスキルの外を読み書きし（Ouraとの通信・環境ファイル）、`oura_records.py` は値の変換だけをする。どれも標準ライブラリだけで動く。**Pythonから使うなら常にimport、シェルからならスクリプトを起動する**（理由は [client-usage.md](references/client-usage.md)）。
+道具は `scripts/` にある。どれも手続きに使う道具で、呼び出し側が手続きの中で使う。`oura_auth.py`・`oura_api.py`・`oura_env.py` はスキルの外を読み書きし（Ouraとの通信・`.env`）、`oura_records.py` は値の変換だけをする。どれも標準ライブラリだけで動く。**Pythonから使うなら常にimport、シェルからならスクリプトを起動する**（理由は [client-usage.md](references/client-usage.md)）。
 
 - **呼び出し側は道具を写さず、自前の薄いラッパーも持たない。** トークンの入口は `oura_auth.ensure_access_token()`、取得の入口は `oura_api.fetch()` / `fetch_many()` に1つずつ置く。
 - **道具で強制できる判断は、道具の中に実装してある。** トークンの更新と保存・ページ送り・心拍の分割・長大な配列の要約・日付の項目の違いの吸収で、理由は判断ファイルに書いてある。強制できない判断（日次は上書き・区間は record id で重複を防ぐ、など）は、このスキルが答えとして伝え、呼び出し側が守る。
@@ -90,14 +90,14 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 
 ### シェルから起動するスクリプト
 
-いずれも `~/.claude-skills-env/oura-api-generic-logic.env` から認証情報を読む。別のファイルを一時的に使いたいときは、環境変数 `OURA_ENV_FILE` にファイルの絶対パスを渡す。
+いずれも環境変数、無ければ起動フォルダ（プロジェクトのフォルダ直下）の `.env` から `OURA_*` を読み、トークンを更新したら `.env` の `OURA_*` の行だけを書き換える。プロジェクトのフォルダから `<skill-dir>/scripts/...` の形で起動し、スキルのフォルダへ cd しない。
 
 | スクリプト | 中身 |
 |---|---|
-| `uv run scripts/oura_auth.py init <client_id> <client_secret> [redirect_uri]` | 環境ファイルを作る |
-| `uv run scripts/oura_auth.py exchange <code>` | 認可コードをトークンに交換して保存する（初回だけ） |
-| `uv run scripts/oura_auth.py ensure` | トークンが有効かを確かめ、有効期限を表示する。トークンは表示しない |
-| `uv run scripts/oura_api.py <endpoint> [start] [end] [--full]` | 1つのエンドポイントを取ってJSONで出す |
+| `uv run <skill-dir>/scripts/oura_auth.py init <client_id> <client_secret> [redirect_uri]` | 起動フォルダの `.env` に `OURA_*` の行を書く |
+| `uv run <skill-dir>/scripts/oura_auth.py exchange <code>` | 認可コードをトークンに交換して保存する（初回だけ） |
+| `uv run <skill-dir>/scripts/oura_auth.py ensure` | トークンが有効かを確かめ、有効期限を表示する。トークンは表示しない |
+| `uv run <skill-dir>/scripts/oura_api.py <endpoint> [start] [end] [--full]` | 1つのエンドポイントを取ってJSONで出す |
 
 ## 索引
 
@@ -131,7 +131,7 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 | 却下した案 | 選ばなかった案と、その理由。記録が無ければ「記録なし」と書く |
 | 当てはまる範囲と限界 | どこまで使えるか |
 
-- **導入先の環境は書かない。** 認証情報・どこに記録するか・列名は、呼び出し側か環境ファイルが持つ。
+- **導入先の環境は書かない。** 認証情報・どこに記録するか・列名は、呼び出し側か `.env` が持つ。
 - **環境の仕様に合わせた値は、道具のコードの定数が正。** APIのURL・エンドポイントのパス・心拍の上限日数のような値は、人が決めるものではないので判断ファイルに値の表として置かない。判断の本文から「`oura_api.py` の定数が正」と指す。
 - **道具は値の表を読まない。** 多くのスキルが読み込むたびにimportするので、表の書き損じ1つで、使うすべてのスキルが止まるため。作成者が決めた値（前後に足す日数・要約の閾値）はコードに定数として置き、表は写しとして残し、決めた理由を判断ファイルに書く。
 
@@ -141,7 +141,7 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 
 | 合図 | 足りないもの |
 |---|---|
-| `client_id/client_secret is missing. run 'init' first.` | `~/.claude-skills-env/oura-api-generic-logic.env`、またはその中の client_id・client_secret |
+| `client_id/client_secret is missing. run 'init' first.` | 起動フォルダの `.env`、またはその中の `OURA_CLIENT_ID`・`OURA_CLIENT_SECRET` |
 | `refresh_token is missing. run 'exchange' first.` | 認可（ブラウザでの認可と、コードの交換） |
 | `daily_resilience`・`daily_cardiovascular_age`・`vo2max` だけが401 | 認可のスコープ `stress`・`heart_health`（[認証とトークン](references/auth.md)） |
 | `Oura token endpoint error 400`（refresh のとき） | 有効な refresh_token。別の処理が先に使った・古い値に戻した、のどちらか。認可からやり直す |

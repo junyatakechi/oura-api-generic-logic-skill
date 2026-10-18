@@ -10,20 +10,20 @@
 ## 答え
 
 1. **Oura API v2 は OAuth2 が必須。** OAuthアプリ（client_id・client_secret）を作り、ブラウザで認可して得たコードをトークンに交換する。これは人が一度だけ行う。
-2. **refresh_token は使い捨て。** 1回使うと新しい値に置き換わる。更新したら、新しい refresh_token で環境ファイル全体を必ず上書きする。手で古い値に戻さない。
+2. **refresh_token は使い捨て。** 1回使うと新しい値に置き換わる。更新したら、新しい refresh_token で `.env` の `OURA_*` の行を必ず上書きする。トークンの3つは環境変数で渡さない（環境変数が優先され、更新した値が使われなくなる）。手で古い値に戻さない。
 3. **APIを呼ぶ前に、毎回 `ensure_access_token()` を通す。** access_token は数十分〜24時間ほどで失効する。期限の5分前を過ぎていれば更新する。呼び出し側で更新の要否を判断しない。
-4. **認証情報（client_id・client_secret・access_token・refresh_token）は、スキルの中にもNotionにも書かない。** スキルの外の環境ファイルを、道具が都度読み書きするだけにする。トークンをチャットに表示しない。
+4. **認証情報（client_id・client_secret・access_token・refresh_token）は、スキルの中にもNotionにも書かない。** プロジェクトのフォルダ直下の `.env` を、道具が都度読み書きするだけにする。トークンをチャットに表示しない。
 5. **特定のエンドポイントだけが401になるのは、認可のスコープ不足。** `daily_resilience`・`daily_cardiovascular_age`・`vo2max` だけが401なら、認可のときに `stress`・`heart_health` のスコープを付けていない。スコープを足して認可からやり直す。
-6. **1つの環境ファイルを、同時に動く2つの処理で使わない。** refresh_token が使い捨てなので、片方が更新すると、もう片方が持っている値は使えなくなる。
+6. **1つの `.env` を、同時に動く2つの処理で使わない。** refresh_token が使い捨てなので、片方が更新すると、もう片方が持っている値は使えなくなる。
 
 ## 道具
 
 - `oura_auth.ensure_access_token()`：有効な access_token を返す。必要なら更新して保存する。答え2・3は道具の中に実装してある。
-- `uv run scripts/oura_auth.py init <client_id> <client_secret> [redirect_uri]`：環境ファイルを作る。
-- `uv run scripts/oura_auth.py exchange <code>`：認可コードをトークンに交換して保存する（初回だけ）。
-- `uv run scripts/oura_auth.py ensure`：トークンが有効かを確かめ、有効期限を表示する。トークンそのものは表示しない。
+- `uv run <skill-dir>/scripts/oura_auth.py init <client_id> <client_secret> [redirect_uri]`：起動フォルダの `.env` に `OURA_*` の行を書く。
+- `uv run <skill-dir>/scripts/oura_auth.py exchange <code>`：認可コードをトークンに交換して保存する（初回だけ）。
+- `uv run <skill-dir>/scripts/oura_auth.py ensure`：トークンが有効かを確かめ、有効期限を表示する。トークンそのものは表示しない。
 - 失敗は `OuraAuthError` で返す。
-- 別のファイルを一時的に使いたいときは、環境変数 `OURA_ENV_FILE` にファイルの絶対パスを渡す。
+- 読み書きするのは、起動フォルダ（プロジェクトのフォルダ直下）の `.env`。同じキーの環境変数があれば、読むときはそちらを優先する。プロジェクトのフォルダから起動し、スキルのフォルダへ cd しない。
 
 **値（トークンの発行先・期限の5分前）は、`oura_auth.py` の定数が正。**
 
