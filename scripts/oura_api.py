@@ -11,19 +11,19 @@
     data = fetch("sleep", ensure_access_token(), "2026-07-21", "2026-07-23")
 
 シェルからの単発の確認:
-  uv run scripts/oura_api.py <endpoint> [start_date] [end_date] [--full]
+  uv run scripts/oura_api.py <endpoint> [start_date] [end_date] [--summarize]
 
   endpoint: daily_sleep / daily_activity / daily_readiness / daily_resilience /
             daily_cardiovascular_age / daily_spo2 / daily_stress / vo2max /
             sleep / sleep_time / heartrate / session / workout / enhanced_tag /
             tag / rest_mode_period / ring_configuration / personal_info
   start_date/end_date: YYYY-MM-DD (省略時はstart_date=前日, end_date=当日)
-  --full: 心拍・睡眠段階等の生の時系列配列を省略せずそのまま出力する
+  --summarize: 心拍・睡眠段階等の長大な時系列配列を、件数と先頭の数件に要約して出力する
 
 このモジュールが引き受けるもの(呼び出し側で再実装しないこと):
   - next_token のページ送り
   - heartrate だけ日時で範囲を指定し、29日以内に分割して結合する(references/heartrate.md)
-  - 長大な時系列配列の要約(references/raw-data.md)
+  - 長大な時系列配列の要約。full=False を渡したときだけ行う(references/raw-data.md)
 アクセストークンの更新はしない。`oura_auth.ensure_access_token()` で取ったものを渡す。
 
 ここにある定数(エンドポイントのパス・範囲の上限)は、どれもOura APIという共有する環境の
@@ -76,7 +76,7 @@ DATETIME_RANGE = {"heartrate"}
 # この日数を超える場合はfetch()が自動的に分割して複数回リクエストし、結果を結合する。
 MAX_RANGE_DAYS = {"heartrate": 29}
 
-# 長大な時系列配列を持つフィールド。full=Falseなら要約する(references/raw-data.md)。
+# 長大な時系列配列を持つフィールド。full=Falseを渡されたら要約する(references/raw-data.md)。
 LONG_ARRAY_FIELDS = [
     ("class_5_min",),
     ("movement_30_sec",),
@@ -121,12 +121,12 @@ def _summarize_long_arrays(record):
         last_key = path[-1]
         value = node.get(last_key)
         if isinstance(value, str) and len(value) > SUMMARIZE_STR_CHARS:
-            node[last_key] = f"<{len(value)}文字を省略。--fullで全体取得可能>"
+            node[last_key] = f"<{len(value)}文字を省略。full=Trueで全体取得可能>"
         elif isinstance(value, list) and len(value) > SUMMARIZE_LIST_ITEMS:
             node[last_key] = {
                 "件数": len(value),
                 f"先頭{SUMMARY_HEAD_ITEMS}件": value[:SUMMARY_HEAD_ITEMS],
-                "備考": "--fullで全件取得可能",
+                "備考": "full=Trueで全件取得可能",
             }
     return record
 
@@ -142,7 +142,7 @@ def _fetch_page(url, access_token):
         raise OuraError(f"Oura API に接続できない ({url}): {e}") from None
 
 
-def fetch(endpoint_key, access_token, start_date=None, end_date=None, full=False):
+def fetch(endpoint_key, access_token, start_date=None, end_date=None, full=True):
     """指定エンドポイントのレコードを取得する。戻り値は {"data": [...], ...}。
 
     MAX_RANGE_DAYS に該当するエンドポイント(heartrate)は、指定範囲が上限日数を
@@ -169,7 +169,7 @@ def fetch(endpoint_key, access_token, start_date=None, end_date=None, full=False
     return _fetch_single_range(endpoint_key, access_token, start_date, end_date, full=full)
 
 
-def fetch_many(endpoint_keys, access_token, start_date, end_date, full=False, on_error=None):
+def fetch_many(endpoint_keys, access_token, start_date, end_date, full=True, on_error=None):
     """複数エンドポイントをまとめて取得する。{endpoint_key: response} を返す。
 
     1つのエンドポイントの失敗で全体を止めるかは呼び出し側が選ぶ。`on_error` を渡すと、
@@ -198,7 +198,7 @@ def _split_date_range(start_date, end_date, max_days):
         cur = chunk_end + timedelta(days=1)
 
 
-def _fetch_single_range(endpoint_key, access_token, start_date=None, end_date=None, full=False):
+def _fetch_single_range(endpoint_key, access_token, start_date=None, end_date=None, full=True):
     """指定エンドポイントを1回の範囲リクエスト(next_tokenでのページ送りは含む)で取得する。"""
     path = ENDPOINTS[endpoint_key]
     url = f"{API_URL}/{path}"
@@ -245,8 +245,8 @@ def main():
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from oura_auth import OuraAuthError, ensure_access_token
 
-    full = "--full" in sys.argv[1:]
-    args = [a for a in sys.argv[1:] if a != "--full"]
+    full = "--summarize" not in sys.argv[1:]
+    args = [a for a in sys.argv[1:] if a != "--summarize"]
     if len(args) < 1:
         print(__doc__)
         raise SystemExit(1)

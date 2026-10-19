@@ -2,7 +2,7 @@
 name: oura-api-generic-logic
 description: "文脈: Oura API。種類: 一般的な業務領域の判断。使う場面: この文脈の判断を直接聞かれたときに使う。この文脈の作業の前に読み、索引の「いつ聞くか」に当たる判断を聞く。"
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
   repository: "https://github.com/junyatakechi/oura-api-generic-logic"
 ---
 
@@ -73,8 +73,8 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 | 関数 | 中身 |
 |---|---|
 | `oura_auth.ensure_access_token(path=None)` | 有効な access_token。期限の5分前を過ぎていれば更新し、新しい refresh_token ごと保存する |
-| `oura_api.fetch(endpoint, token, start, end, full=False)` | 1つのエンドポイントを取る。`{"data": [...]}` |
-| `oura_api.fetch_many(endpoints, token, start, end, full=False, on_error=None)` | 複数をまとめて取る。`on_error` を渡すと、失敗したものを空にして続ける |
+| `oura_api.fetch(endpoint, token, start, end, full=True)` | 1つのエンドポイントを取る。`{"data": [...]}`。`full=False` で長大な時系列を要約する |
+| `oura_api.fetch_many(endpoints, token, start, end, full=True, on_error=None)` | 複数をまとめて取る。`on_error` を渡すと、失敗したものを空にして続ける |
 | `oura_records.padded_range(start, end)` | 境界日を取りこぼさない取得範囲 |
 | `oura_records.records_on_day(response, endpoint, day)` / `find_by_day(...)` | 対象日のレコード（全件 / 1件） |
 | `oura_records.heart_rate_min_avg(response, day)` | 対象日の心拍の最低と平均 |
@@ -97,7 +97,7 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 | `uv run <skill-dir>/scripts/oura_auth.py init <client_id> <client_secret> [redirect_uri]` | 起動フォルダの `.env` に `OURA_*` の行を書く |
 | `uv run <skill-dir>/scripts/oura_auth.py exchange <code>` | 認可コードをトークンに交換して保存する（初回だけ） |
 | `uv run <skill-dir>/scripts/oura_auth.py ensure` | トークンが有効かを確かめ、有効期限を表示する。トークンは表示しない |
-| `uv run <skill-dir>/scripts/oura_api.py <endpoint> [start] [end] [--full]` | 1つのエンドポイントを取ってJSONで出す |
+| `uv run <skill-dir>/scripts/oura_api.py <endpoint> [start] [end] [--summarize]` | 1つのエンドポイントを取ってJSONで出す。`--summarize` で長大な時系列を要約する |
 
 ## 索引
 
@@ -107,7 +107,7 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 | APIの呼び方        | [client-usage.md](references/client-usage.md)       | どの入口から呼び、何を呼び出し側で書かないか        | 認証とトークン    | Ouraを読むコードを書く前・404が出たとき              |
 | 心拍の取り方         | [heartrate.md](references/heartrate.md)             | 心拍の範囲の指定と、日ごとの集計              | —          | 心拍を取る前・400が出たとき                      |
 | 境界日の取りこぼし      | [date-boundary.md](references/date-boundary.md)     | どの範囲で取り、どう対象日のレコードを拾うか        | —          | 期間を指定して取る前                           |
-| 生データの持ち方       | [raw-data.md](references/raw-data.md)               | レスポンスをどう残し、長大な配列をどうするか        | —          | 生データを記録する前                           |
+| 長大な時系列の要約     | [raw-data.md](references/raw-data.md)               | 長大な時系列の配列を全件で取るか、どう要約するか    | —          | 時系列を含むレコードを取るコードを書く前              |
 | データが確定する時期     | [data-latency.md](references/data-latency.md)       | いつ取り、記録済みの日次をどうするか。空の項目をどう読むか | —          | 同期の対象日と時刻を決めるとき・項目が空だったとき            |
 | レコードの同一性       | [record-identity.md](references/record-identity.md) | 何で重複を判定し、既にあったらどうするか          | データが確定する時期 | 記録する処理を書く前                           |
 | タグの読み方         | [tags.md](references/tags.md)                       | 2つの形式と終了時刻の有無、重複の除き方          | レコードの同一性   | タグを記録する前・タグを数える前                     |
@@ -149,4 +149,4 @@ nights = [r for r in oura_records.records_on_day(data["sleep"], "sleep", "2026-0
 ## 未決
 
 - 心血管年齢の `pulse_wave_velocity` が実データで入るか（[データが確定する時期](references/data-latency.md)）。
-- 前後に足す日数（1日）と、生データの要約の閾値（200文字・20件・5件）を決めた理由の記録が無い。
+- 前後に足す日数（1日）と、長大な時系列の要約の閾値（200文字・20件・5件）を決めた理由の記録が無い。
