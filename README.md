@@ -54,7 +54,7 @@ git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/s
    uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py ensure
    ```
 
-refresh_token は使い捨てで、使うたびに道具が `.env` の `OURA_*` の行を新しい値で上書きする。手で古い値に戻さない。同じ `.env` を、同時に動く2つの処理で使わない。トークンの3つ（`OURA_ACCESS_TOKEN`・`OURA_REFRESH_TOKEN`・`OURA_EXPIRES_AT`）は環境変数で渡さず `.env` に置く。環境変数が優先されるので、更新した値が使われなくなる。
+refresh_token は使い捨てで、使うたびに道具が `.env` の `OURA_*` の行を新しい値で上書きする。手で古い値に戻さない。トークンの3つ（`OURA_ACCESS_TOKEN`・`OURA_REFRESH_TOKEN`・`OURA_EXPIRES_AT`）は環境変数で渡さず `.env` に置く。環境変数が優先されるので、更新した値が使われなくなる。
 
 ## 使い方
 
