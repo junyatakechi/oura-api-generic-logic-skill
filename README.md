@@ -1,4 +1,4 @@
-# oura-api-generic-logic
+# oura-api-generic-logic-skill
 
 Oura Ring の公式API（Oura API v2）をClaudeから扱うための、generic-logic スキル。
 Claudeに頼むと、トークンを壊したり、境界日のデータを取りこぼしたり、昼寝を夜の睡眠として数えたりする落とし穴を避けながら、Ouraのデータを取得する。
@@ -21,7 +21,7 @@ Claudeに頼むと、トークンを壊したり、境界日のデータを取�
 スキルのフォルダでクローンする。フォルダ名はリポジトリ名のままでよい。
 
 ```bash
-git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/skills/oura-api-generic-logic
+git clone https://github.com/junyatakechi/oura-api-generic-logic-skill.git ~/.claude/skills/oura-api-generic-logic-skill
 ```
 
 特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/` の中でクローンする。
@@ -33,7 +33,7 @@ git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/s
 
    ```bash
    cd <プロジェクトのフォルダ>
-   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py init <client_id> <client_secret>
+   uv run ~/.claude/skills/oura-api-generic-logic-skill/scripts/oura_auth.py init <client_id> <client_secret>
    ```
 
 3. ブラウザで次のURLを開いて認可する。`<client_id>` は控えた値に置き換える。**スコープに `stress` と `heart_health` を含める。** 含めないと、回復力・心血管年齢・VO2Maxだけが取れない。
@@ -45,13 +45,13 @@ git clone https://github.com/junyatakechi/oura-api-generic-logic.git ~/.claude/s
 4. 許可すると `http://localhost:8765/callback?code=...` へ移り、接続エラーになる。手元で何も待ち受けていないためで、問題ない。アドレスバーの `code=` の値を控え、トークンに換える。
 
    ```bash
-   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py exchange <code>
+   uv run ~/.claude/skills/oura-api-generic-logic-skill/scripts/oura_auth.py exchange <code>
    ```
 
 5. 確かめる。
 
    ```bash
-   uv run ~/.claude/skills/oura-api-generic-logic/scripts/oura_auth.py ensure
+   uv run ~/.claude/skills/oura-api-generic-logic-skill/scripts/oura_auth.py ensure
    ```
 
 refresh_token は使い捨てで、使うたびに道具が `.env` の `OURA_*` の行を新しい値で上書きする。手で古い値に戻さない。トークンの3つ（`OURA_ACCESS_TOKEN`・`OURA_REFRESH_TOKEN`・`OURA_EXPIRES_AT`）は環境変数で渡さず `.env` に置く。環境変数が優先されるので、更新した値が使われなくなる。
@@ -67,13 +67,13 @@ Claudeに普段の言葉で頼むと、Claudeがこのスキルを読み込ん�
 | 「Ouraで昨日の睡眠を取ってみて」 | 境界日を取りこぼさない範囲で取り、対象日のレコードを見せる |
 | 「Ouraが401を返す」 | スコープ不足かトークンの問題かを見分け、次にすることを答える |
 
-取ったデータをNotionに記録するのは、アプリケーションスキル（oura-collection-app など）の担当。
+取ったデータをNotionに記録するのは、アプリケーションスキル（oura-collection-app-skill など）の担当。
 
 ## 他のスキルから使う
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.expanduser("~/.claude/skills/oura-api-generic-logic/scripts"))
+sys.path.insert(0, os.path.expanduser("~/.claude/skills/oura-api-generic-logic-skill/scripts"))
 from oura_auth import ensure_access_token
 from oura_api import OuraError, fetch_many
 import oura_records

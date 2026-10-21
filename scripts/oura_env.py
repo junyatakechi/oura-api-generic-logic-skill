@@ -1,4 +1,4 @@
-"""oura-api-generic-logic: Oura認証情報の .env 形式読み書き(標準ライブラリのみ)。
+"""oura-api-generic-logic-skill: Oura認証情報の .env 形式読み書き(標準ライブラリのみ)。
 
 保存先は起動フォルダ(作業ディレクトリ)の `.env`(KEY=VALUE形式)。プロジェクトのスキルは
 この1つを共有するので、書き込むときは OURA_* の行だけを書き換え、他の行はそのまま残す。

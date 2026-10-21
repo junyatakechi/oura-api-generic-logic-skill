@@ -1,9 +1,9 @@
 ---
-name: oura-api-generic-logic
+name: oura-api-generic-logic-skill
 description: "文脈: Oura API。種類: 一般的な業務領域の判断。使う場面: この文脈の判断を直接聞かれたときに使う。この文脈の作業の前に読み、索引の「いつ聞くか」に当たる判断を聞く。"
 metadata:
-  version: "0.2.1"
-  repository: "https://github.com/junyatakechi/oura-api-generic-logic"
+  version: "0.3.0"
+  repository: "https://github.com/junyatakechi/oura-api-generic-logic-skill"
 ---
 
 # Oura API の一般的な判断
@@ -50,7 +50,7 @@ metadata:
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "oura-api-generic-logic", "scripts")))
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "oura-api-generic-logic-skill", "scripts")))
 from oura_auth import OuraAuthError, ensure_access_token
 from oura_api import OuraError, fetch_many
 import oura_records

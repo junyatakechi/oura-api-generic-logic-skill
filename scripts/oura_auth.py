@@ -2,7 +2,7 @@
 # /// script
 # requires-python = ">=3.11"
 # ///
-"""oura-api-generic-logic: Oura API v2 OAuth2 認証(標準ライブラリのみ使用)。
+"""oura-api-generic-logic-skill: Oura API v2 OAuth2 認証(標準ライブラリのみ使用)。
 
 他スクリプトからは `ensure_access_token()` をimportして使う(references/auth.md)。
 

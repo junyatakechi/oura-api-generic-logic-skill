@@ -2,7 +2,7 @@
 # /// script
 # requires-python = ">=3.11"
 # ///
-"""oura-api-generic-logic: Oura API v2 usercollection の取得(標準ライブラリのみ使用)。
+"""oura-api-generic-logic-skill: Oura API v2 usercollection の取得(標準ライブラリのみ使用)。
 
 このモジュールは**他スキルから直接importして使う公開モジュール**(references/client-usage.md)。
 

@@ -23,7 +23,7 @@
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "oura-api-generic-logic", "scripts")))
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "oura-api-generic-logic-skill", "scripts")))
 from oura_auth import OuraAuthError, ensure_access_token
 from oura_api import OuraError, fetch_many
 import oura_records
