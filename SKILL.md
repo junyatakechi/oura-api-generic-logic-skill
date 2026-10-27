@@ -1,8 +1,8 @@
 ---
 name: oura-api-generic-logic-skill
-description: "文脈: Oura API。種類: 一般的な業務領域の判断。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
+description: "文脈: Oura API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
   repository: "https://github.com/junyatakechi/oura-api-generic-logic-skill"
 ---
 
