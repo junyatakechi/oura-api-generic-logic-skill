@@ -9,6 +9,20 @@
   - 心拍の時系列の扱い                        → references/heartrate.md
   - タグの2形式と、終了時刻の有無             → references/tags.md
   - 睡眠区間の種別と、日付のずれ              → references/sleep-periods.md
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。
+
+公開する関数:
+  padded_range(start, end)                          取りこぼさない取得範囲(YYYY-MM-DD の組)
+  day_of(record, endpoint_key)                      そのレコードがOura上で何日に属するか
+  records_on_day(response, endpoint_key, day)       対象日に属するレコードを全件
+  find_by_day(response, endpoint_key, day)          対象日のレコードを1件。無ければ空の dict
+  g(record, *path, default=None)                    ネストした項目を安全に取り出す
+  jst_date(iso)                                     ISO日時の実日付(JST)
+  heart_rate_min_avg(heartrate_response, day)       対象日の bpm の最低と平均(小数1桁)
+  normalize_tag(record, kind)                       タグの2形式を共通の形にそろえる
+  is_night_sleep(sleep_record)                      夜間の主睡眠(long_sleep)か
+  bedtime_day(sleep_record)                         寝始めた実日付
+  wake_day(sleep_record)                            目覚めた実日付
 """
 from datetime import date, datetime, timedelta, timezone
 

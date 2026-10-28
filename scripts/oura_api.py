@@ -28,6 +28,13 @@
 
 ここにある定数(エンドポイントのパス・範囲の上限)は、どれもOura APIという共有する環境の
 仕様で、人が決めた値ではない。要約の閾値だけは作成者が決めた値で、理由は references/raw-data.md。
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。
+
+公開する関数:
+  fetch(endpoint_key, access_token, start_date=None, end_date=None, full=True)   1つのエンドポイントを取る。{"data": [...]}。full=False で長大な時系列を要約する
+  fetch_many(endpoint_keys, access_token, start_date, end_date, full=True, on_error=None)   複数をまとめて取る。{endpoint_key: response}。on_error を渡すと失敗したものを空にして続ける
+
+例外: OuraError(基底)・OuraAPIError(.status にHTTPステータス)
 """
 import json
 import os

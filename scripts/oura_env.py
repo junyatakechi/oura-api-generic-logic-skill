@@ -3,6 +3,11 @@
 保存先は起動フォルダ(作業ディレクトリ)の `.env`(KEY=VALUE形式)。プロジェクトのスキルは
 この1つを共有するので、書き込むときは OURA_* の行だけを書き換え、他の行はそのまま残す。
 同じキーの環境変数があれば、読むときはそちらを優先する(references/auth.md)。
+公開する関数:
+  env_path(path=None)            使う .env のパス
+  load(path=None)                .env を読み、同じキーの環境変数で上書きして dict で返す
+  save(creds, path=None)         .env の OURA_* の行に書き出す(初回のセットアップ用)
+  save_tokens(creds, path=None)  トークンの3行だけを書き換える
 """
 import os
 

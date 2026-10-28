@@ -21,6 +21,13 @@
 
 認証情報は起動フォルダ(作業ディレクトリ)の .env の OURA_* に置く。同じキーの環境変数があれば
 そちらを優先する。書き込むときは .env の OURA_* の行だけを書き換える。
+importの仕方は SKILL.md の「手続きに使う道具」にある(ここには書かない)。
+
+公開する関数:
+  ensure_access_token(path=None)   有効な access_token。期限の5分前を過ぎていれば更新し、新しい refresh_token ごと保存する
+  refresh(path=None)               refresh_token で access_token を更新し、新しい refresh_token ごと保存する
+
+例外: OuraAuthError(認証情報が無い・トークンの発行や更新を拒否された)
 """
 import json
 import os
