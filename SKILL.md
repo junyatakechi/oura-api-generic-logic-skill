@@ -2,11 +2,10 @@
 name: oura-api-generic-logic-skill
 description: "文脈: Oura API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.3.3"
+  version: "0.3.4"
   repository: "https://github.com/junyatakechi/oura-api-generic-logic-skill"
-  design: "人の判断を切り出すAIスキルの設計_v1.0.0"
+  design: "人の判断を切り出すAIスキルの設計_v2.0.0"
   design-url: "https://app.notion.com/p/jay-t/AI-3eaf2fd6925e8102b86fee3b6b3dd5a3"
-  design-rule: "このスキルを作る・直すときは、design の設計文書を読み、その型と定型文に従う。"
 ---
 
 # 索引
