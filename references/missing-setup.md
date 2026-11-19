@@ -30,7 +30,7 @@ refresh のときの `Oura token endpoint error 400` は、有効な refresh_tok
 
 ### 4. 設定は補わない
 
-設定は補わない。認証情報を探したり作ったりせず、本人に作ってもらう。認証情報をチャットで受け取らない。
+設定は補わない。認証情報を探したり作ったりせず、指示者に作ってもらう。認証情報をチャットで受け取らない。
 
 1. 記録なし
 
@@ -46,7 +46,7 @@ refresh のときの `Oura token endpoint error 400` は、有効な refresh_tok
 
 | 材料 | 種類 | 必須 | 形 | 無いとき |
 |---|---|---|---|---|
-| 道具が返した失敗 | 導入先の環境 | ○ | `{"例外": "OuraAuthError", "メッセージ": "refresh_token is missing. run 'exchange' first.", "操作": "refresh"}` | 判断できない |
+| 道具が返した失敗 | 対象の値 | ○ | `{"例外": "OuraAuthError", "メッセージ": "refresh_token is missing. run 'exchange' first.", "操作": "refresh"}` | 判断できない |
 
 ## 計算
 

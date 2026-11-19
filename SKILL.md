@@ -2,10 +2,10 @@
 name: oura-api-generic-logic-skill
 description: "文脈: Oura API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  version: "0.3.4"
+  version: "0.3.5"
   repository: "https://github.com/junyatakechi/oura-api-generic-logic-skill"
-  design: "人の判断を切り出すAIスキルの設計_v2.0.0"
-  design-url: "https://app.notion.com/p/jay-t/AI-3eaf2fd6925e8102b86fee3b6b3dd5a3"
+  design: "人の判断を切り出すAgent Skillsの設計_v3.6.0"
+  design-url: "https://app.notion.com/p/3eaf2fd6925e8102b86fee3b6b3dd5a3"
 ---
 
 # 索引
@@ -13,14 +13,14 @@ metadata:
 | 判断名 | 扱うこと | ファイル | 依存する判断 | 計算 |
 |---|---|---|---|---|
 | 認証とトークン | 認証情報を設定する・Ouraに接続するコードを書く・401が出たとき、トークンをどう更新し、どこに置き、401をどう読むか | [auth.md](references/auth.md) | — | — |
-| APIの呼び方 | Ouraを読むコードを書く・404が出たとき、どの入口から呼び、何を呼び出し側で書かないか | [client-usage.md](references/client-usage.md) | 認証とトークン | — |
+| APIの呼び方 | Ouraを読むコードを書く・404が出たとき、どの入口から呼び、何を呼び出し側で書かないか | [client-usage.md](references/client-usage.md) | `auth.md` | — |
 | 心拍の取り方 | 心拍を取る・400が出たとき、範囲をどう指定し、日ごとにどう集計するか | [heartrate.md](references/heartrate.md) | — | — |
 | 境界日の取りこぼし | 期間を指定して取るとき、どの範囲で取り、どう対象日のレコードを拾うか | [date-boundary.md](references/date-boundary.md) | — | — |
 | 長大な時系列の要約 | 時系列を含むレコードを取るコードを書くとき、長大な時系列の配列を全件で取るか、どう要約するか | [raw-data.md](references/raw-data.md) | — | — |
 | データが確定する時期 | 同期の対象日と時刻を決めるとき・項目が空だったとき、いつ取り、記録済みの日次をどうするか。空の項目をどう読むか | [data-latency.md](references/data-latency.md) | — | — |
-| レコードの同一性 | 記録する処理を書くとき、何で重複を判定し、既にあったらどうするか | [record-identity.md](references/record-identity.md) | データが確定する時期 | — |
-| タグの読み方 | タグを記録する・数えるとき、2つの形式と終了時刻の有無をどう読み、重複をどう除くか | [tags.md](references/tags.md) | レコードの同一性 | — |
-| 睡眠区間と日次の睡眠の読み方 | 睡眠のデータを日付で引く・睡眠時間やHRVを集計するとき、昼寝の混ざり方・日付のずれ・スコアと時間の違いをどう読むか | [sleep-periods.md](references/sleep-periods.md) | 境界日の取りこぼし | — |
+| レコードの同一性 | 記録する処理を書くとき、何で重複を判定し、既にあったらどうするか | [record-identity.md](references/record-identity.md) | `data-latency.md` | — |
+| タグの読み方 | タグを記録する・数えるとき、2つの形式と終了時刻の有無をどう読み、重複をどう除くか | [tags.md](references/tags.md) | `record-identity.md` | — |
+| 睡眠区間と日次の睡眠の読み方 | 睡眠のデータを日付で引く・睡眠時間やHRVを集計するとき、昼寝の混ざり方・日付のずれ・スコアと時間の違いをどう読むか | [sleep-periods.md](references/sleep-periods.md) | `date-boundary.md` | — |
 | 設定の不足 | 道具が `OuraAuthError` を返したとき、どの設定の不足によるものか | [missing-setup.md](references/missing-setup.md) | — | — |
 
 # 手続きに使う道具
