@@ -1,3 +1,10 @@
+---
+sources:
+  S1:
+    name: "Oura API v2 の OAuth2 の仕様"
+    checked: "記録なし"
+---
+
 # 認証とトークン
 
 ## 扱うこと
@@ -20,7 +27,7 @@ Oura API v2 は OAuth2 が必須。OAuthアプリ（client_id・client_secret）
 
 refresh_token は使い捨て。更新したら、新しい refresh_token で `.env` の `OURA_*` の行を必ず上書きする。トークンの3つ（`OURA_ACCESS_TOKEN`・`OURA_REFRESH_TOKEN`・`OURA_EXPIRES_AT`）は環境変数で渡さない。手で古い値に戻さない。
 
-1. （知見）Oura の OAuth2 の仕様で、refresh_token は1回使うと新しい値に置き換わる。（出典：Oura API v2 の OAuth2 の仕様@記録なし）
+1. （知見）Oura の OAuth2 の仕様で、refresh_token は1回使うと新しい値に置き換わる。（出典：S1）
 2. （根拠）環境変数が `.env` より優先されるので、トークンを環境変数で渡すと、更新した値が使われなくなる。（決定日：記録なし）
 
 ### 3. APIを呼ぶ前に、毎回 `ensure_access_token()` を通す

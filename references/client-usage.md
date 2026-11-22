@@ -1,3 +1,10 @@
+---
+sources:
+  S1:
+    name: "Oura API v2 の公式ドキュメント"
+    checked: "記録なし"
+---
+
 # APIの呼び方
 
 ## 扱うこと
@@ -44,7 +51,7 @@ Pythonからはimportして使う。`ensure_access_token()` でトークンを�
 
 エンドポイントのパスは、名前どおりとは限らない。`vo2max` の実際のパスは `vO2_max`。404になったら公式ドキュメント（https://cloud.ouraring.com/v2/docs ）で正式なパスを確かめ、`oura_api.ENDPOINTS` を直す。
 
-1. （知見）Oura API のパスの命名は揃っていない。（出典：Oura API v2 の公式ドキュメント@記録なし）
+1. （知見）Oura API のパスの命名は揃っていない。（出典：S1）
 
 ### 7. `ring_configuration`・`personal_info` は、期間を取らない
 

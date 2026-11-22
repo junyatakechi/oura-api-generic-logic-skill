@@ -1,3 +1,10 @@
+---
+sources:
+  S1:
+    name: "Oura API v2 の OAuth2 の仕様"
+    checked: "記録なし"
+---
+
 # 設定の不足
 
 ## 扱うこと
@@ -26,7 +33,7 @@
 
 refresh のときの `Oura token endpoint error 400` は、有効な refresh_token が無い。別の処理が先に使ったか、古い値に戻したかのどちらか。README の「セットアップ」の認可からやり直す。
 
-1. （知見）refresh_token は使い捨てで、1回使うと新しい値に置き換わる。（出典：Oura API v2 の OAuth2 の仕様@記録なし）
+1. （知見）refresh_token は使い捨てで、1回使うと新しい値に置き換わる。（出典：S1）
 
 ### 4. 設定は補わない
 
