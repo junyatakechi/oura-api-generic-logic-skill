@@ -5,22 +5,26 @@ Oura Ring の公式API（Oura API v2）を扱うときの、一般的な判断�
 
 ## 必要なもの
 
-- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview)
+- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) か [Codex](https://developers.openai.com/codex)
 - Python 3.11以上と [uv](https://docs.astral.sh/uv/)
 - Oura Ring と、Ouraのアカウント
 
 ## インストール
 
+Claude Code では、次のようにクローンする。
+
 ```bash
 git clone https://github.com/junyatakechi/oura-api-generic-logic-skill.git ~/.claude/skills/oura-api-generic-logic-skill
 ```
 
-特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/` の中でクローンする。
+Codex では、`~/.claude/skills/` を `~/.agents/skills/` に替えてクローンする。
+
+特定のプロジェクトだけで使うなら、`<プロジェクト>/.claude/skills/`（Codex は `<プロジェクト>/.agents/skills/`）の中でクローンする。
 
 ## セットアップ
 
 1. [OuraのOAuthアプリの画面](https://cloud.ouraring.com/oauth/applications)でアプリを作り、client_id と client_secret を控える。リダイレクトURIは `http://localhost:8765/callback` にする。別の用途で作ったアプリがあれば、それを使ってよい。
-2. 認証情報を書く。プロジェクトのフォルダ直下（Claude Code を起動するフォルダ）の `.env` に `OURA_*` の行が書かれる（`.env` が無ければ作られ、他のキーの行はそのまま残る）。キーの中身は `.env.example` のコメントにある。以下のコマンドは、どれもプロジェクトのフォルダで実行する。
+2. 認証情報を書く。プロジェクトのフォルダ直下（AIエージェントを起動するフォルダ）の `.env` に `OURA_*` の行が書かれる（`.env` が無ければ作られ、他のキーの行はそのまま残る）。キーの中身は `.env.example` のコメントにある。以下のコマンドは、どれもプロジェクトのフォルダで実行する。Codex では、`~/.claude/skills/` を `~/.agents/skills/` に替える。
 
    ```bash
    cd <プロジェクトのフォルダ>
@@ -50,7 +54,7 @@ refresh_token は使い捨てで、使うたびに道具が `.env` の `OURA_*` 
 ## 使い方
 
 主に、アプリケーションスキルから呼ばれる。
-直接頼むときも、`/oura-api-generic-logic-skill` で名前を指名する。指名しないと、このスキルは読み込まれない。
+直接頼むときも、`/oura-api-generic-logic-skill` で名前を指名する。指名しないと、このスキルは読み込まれない。Codex では、例の `/` を `$` に替えて指名する。
 
 - 「/oura-api-generic-logic-skill Ouraに繋がるか確かめて」
 - 「/oura-api-generic-logic-skill 昨日の睡眠を取ってみて」
