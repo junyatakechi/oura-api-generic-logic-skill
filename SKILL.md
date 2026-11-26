@@ -2,10 +2,10 @@
 name: oura-api-generic-logic-skill
 description: "文脈: Oura API。種類: 一般的な業務知識。使う場面: 名前で指名されたときだけ使い、会話の内容からは選ばない。"
 metadata:
-  skill-version: "0.3.7"
+  skill-version: "0.3.8"
   design-name: "人の判断を切り出すAgent Skillsの設計"
   design-version: "6.0.1"
-  design-url: "https://app.notion.com/p/3eaf2fd6925e8102b86fee3b6b3dd5a3"
+  design-url: "https://zenn.dev/jayt/articles/agent-skills-judgment-extraction"
 ---
 
 # 索引
